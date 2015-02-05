@@ -42,6 +42,7 @@ Announcer announcer;
 //proxAlarms proxAlarm;
 soundTrack ambiance;
 WindTilt windTilt;
+WindTilt secondTilt;
 //////////////////////////////////////////////////////////
 int xDiff, yDiff;
 float aDiff;
@@ -80,17 +81,18 @@ fun void sendJoyData(){
     while(1){
         if (runState == 1){
             aDif();
-            walking.walk(xDiff, yDiff, aDiff); 
+            //walking.walk(xDiff, yDiff, aDiff); 
+            secondTilt.tiltData(xDiff, yDiff);
             xmit.startMsg("/nunchuck/joystick", "i,i");
             xmit.addInt(x_axis * runState);
             xmit.addInt(y_axis * runState);
-            10::ms => now;
+            1::ms => now;
         }
         else{
             xmit.startMsg("/nunchuck/joystick", "i,i");
             xmit.addInt(x_axis * runState);
             xmit.addInt(y_axis * runState);
-            10::ms => now;// to not overload chuck
+            1::ms => now;// to not overload chuck
         }
     }
 }
@@ -103,9 +105,9 @@ fun void sendAccData(){
             xmit.addInt(y_acc);
             xmit.addInt(z_acc);
             windTilt.tiltData(x_acc, y_acc);
-            30::ms => now;
+            3::ms => now;
         }
-        10::ms => now;
+        1::ms => now;
     }
 }
 
@@ -113,8 +115,9 @@ fun void sendCButtonData(){//laser
     if (runState == 1){
         xmit.startMsg("/nunchuck/Cbutton", "i"); 
         xmit.addInt(c_button);  
-        laser.shoot();  
-        <<<"C Button Pressed">>>;    
+        windTilt.loadSample(Math.random2(0,5));
+        //laser.shoot();  
+        <<<"Changing Sample for Accel">>>;    
     }
 }
 
@@ -122,8 +125,9 @@ fun void sendZButtonData(){//the melee attack
     if(runState == 1){
         xmit.startMsg("/nunchuck/Zbutton", "i"); 
         xmit.addInt(z_button);
-        axe.swing(); //dont spork it if we want it to wait until you attack again...
-        <<<"Z Button Pressed">>>;
+        secondTilt.loadSample(Math.random2(0,5));
+        //axe.swing(); //dont spork it if we want it to wait until you attack again...
+        <<<"Changing Sample for Joystick">>>;
     }
 }
 fun void sendRespawnPing(){
