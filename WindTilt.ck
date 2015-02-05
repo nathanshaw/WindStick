@@ -1,5 +1,14 @@
+/*
+Programmed by Nathan Shaw in Spring 2015 at CalArts
+Two instances of this class provide the sound for my WindStick Wii Nunchuck Instrument
+The Instrument itself is simply a hacked Wii Nunchuck Controller. 
+Each instance of this WindTilt class is mapped to the accelometer and joystick data.
+The two puchbuttons cycle through the available samples. 
+
+Once i find the best sample combinations i will most likely remap the buttons to
+activate and deactive additional FX
+*/
 public class WindTilt{
-    
     
     LiSa looper => JCRev reverb => Chorus chorus => Gain master => Gain level => blackhole;
     SndBuf buf => reverb => chorus => master => dac;
@@ -15,7 +24,7 @@ public class WindTilt{
     0.22 => reverb.mix;
     0.0357 => master.gain;
     float average;
-    string windSounds[6];
+    string windSounds[12];
     
     me.dir() + "/audio/wind1.wav" => windSounds[0];
     me.dir() + "/audio/wind2.wav" => windSounds[1];
@@ -23,7 +32,13 @@ public class WindTilt{
     me.dir() + "/audio/laser1.wav" => windSounds[3];
     me.dir() + "/audio/laser2.wav" => windSounds[4];
     me.dir() + "/audio/laser3.wav" => windSounds[5];
-   
+    me.dir() + "/audio/newPlayer1.wav" => windSounds[6];
+    me.dir() + "/audio/noAmmo1.wav" => windSounds[7];
+    me.dir() + "/audio/playerKilled1.wav" => windSounds[8];
+    me.dir() + "/audio/explosion1.wav" => windSounds[9];
+    me.dir() + "/audio/explosion2.wav" => windSounds[10];
+    me.dir() + "/audio/lowEnd.wav" => windSounds[11];
+    
     windSounds[2] => buf.read;
     
     fun void tiltData(int accX, int accY){
@@ -45,17 +60,7 @@ public class WindTilt{
             for ( 0 => int i; i < buf.samples(); i++){
                 looper.valueAt(buf.valueAt(i), i::samp);//puts values into LiSa   
             }
-            /*
-            while(true){
-                1 => looper.sync;
-                trackerGain => tracker.freq;
-                0.5 => tracker.gain;
-                //0.5 => off.next; 
-                1 => looper.play;
-                trackerGain => looper.gain;
-                buf.samples()::samp => now;
-            }
-            */
+          
         }
         else{
             windSounds[Math.random2(0,windSounds.cap()-1)] => buf.read;
